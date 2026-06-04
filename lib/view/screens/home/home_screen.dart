@@ -4,12 +4,11 @@ import 'package:flutter_assignment/app/colors.dart';
 import 'package:flutter_assignment/app/routes.dart';
 import 'package:flutter_assignment/data/models/github_project_response.dart';
 import 'package:flutter_assignment/extensions/navigator_extensions.dart';
-import 'package:flutter_assignment/providers/theme_provider.dart';
 import 'package:flutter_assignment/view/screens/home/components/item_project_widget.dart';
 import 'package:flutter_assignment/view/screens/home/viewmodel/home_viewmodel.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:gap/gap.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -38,6 +37,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     // final themeMode = ref.watch(themeNotifierProvider);
     // final themeNotifier = ref.watch(themeNotifierProvider.notifier);
 
+    final state = ref.watch(homeViewModelProvider);
+    final viewModel = ref.read(homeViewModelProvider.notifier);
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -54,7 +56,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ],
       ),
       body: PagedListView.separated(
-        pagingController: _viewModel.pagingController,
+        state: state,
+        fetchNextPage: viewModel.fetchNextPage,
         padding: EdgeInsets.all(AppValues.padding),
         separatorBuilder: (context, index) => Gap(AppValues.halfPadding),
         builderDelegate: PagedChildBuilderDelegate<Repository>(
